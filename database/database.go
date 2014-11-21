@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -11,7 +11,7 @@ const mysqlUser string = ""
 const mysqlPass string = ""
 const mysqlDatabase string = ""
 
-func openDatabase() {
+func OpenDatabase() {
 	database, err := sql.Open("mysql", mysqlUser+":"+mysqlPass+"@/"+mysqlDatabase)
 	if err != nil {
 		panic(err.Error()) // TODO actually handle
@@ -20,6 +20,10 @@ func openDatabase() {
 	}
 }
 
-func closeDatabase() {
+func CloseDatabase() {
 	db.Close()
+}
+
+func Get() *sql.DB {
+	return db
 }

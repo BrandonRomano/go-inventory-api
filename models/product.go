@@ -2,19 +2,27 @@ package models
 
 import (
 	"encoding/json"
+	"github.com/brandonromano/inventory_api/database"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type Product struct {
+	Id          string
 	Name        string
 	Description string
 	Price       float32
 }
 
 func (p *Product) Load(id string) {
-	p.Name = "MacBook Air"
-	p.Description = "This is a MacBook."
-	p.Price = 1199.99
+	// Getting the DB
+	db := database.Get()
+	err := db.QueryRow("SELECT * FROM product WHERE id = ?", id).
+		Scan(&p.Id, &p.Name, &p.Description, &p.Price)
+
+	// There was nothing with that ID
+	if err != nil {
+		panic(err) // TODO handle
+	}
 }
 
 func (p *Product) Store() {

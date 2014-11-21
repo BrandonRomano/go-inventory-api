@@ -8,13 +8,7 @@ import (
 
 type Product struct{}
 
-func (product *Product) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	switch request.Method {
-	case "GET":
-		product.get(writer, mux.Vars(request))
-	}
-}
-
-func (product *Product) get(writer http.ResponseWriter, vars map[string]string) {
+func (product *Product) Get(writer http.ResponseWriter, request *http.Request) {
+	vars := mux.Vars(request)
 	fmt.Fprintln(writer, vars["id"])
 }

@@ -1,18 +1,18 @@
 package models
 
 import (
-	"encoding/json"
 	"github.com/brandonromano/inventory_api/database"
 	_ "github.com/go-sql-driver/mysql"
+	"strconv"
 )
 
 const TABLE_NAME = "products"
 
 type Product struct {
-	Id          string
-	Name        string
-	Description string
-	Price       float32
+	Id          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float32 `json:"price"`
 }
 
 func (p *Product) Load(id string) error {
@@ -30,27 +30,28 @@ func (p *Product) Load(id string) error {
 	return nil
 }
 
-func (p *Product) Store() {
+func (p *Product) Store() (string, error) {
 	db := database.Get()
 
 	// Creating prepared statement
 	stmt, err := db.Prepare("INSERT INTO " + TABLE_NAME +
 		"(name,description,price) VALUES(?,?,?)")
 	if err != nil {
-		panic(err) // Failed to create prepared statement
+		return "", err
 	}
 
 	// Executing
-	_, response_err := stmt.Exec(&p.Name, &p.Description, &p.Price)
+	result, response_err := stmt.Exec(&p.Name, &p.Description, &p.Price)
 	if response_err != nil {
-		panic(response_err) // Failed to insert
+		return "", response_err
 	}
-}
 
-func (p *Product) ToJSON() string {
-	json, err := json.Marshal(p)
-	if err != nil {
-		return ""
+	id, insert_error := result.LastInsertId()
+	if insert_error != nil {
+		return "", insert_error
 	}
-	return string(json)
+
+	// No error
+	idString := strconv.FormatInt(id, 10)
+	return idString, nil
 }

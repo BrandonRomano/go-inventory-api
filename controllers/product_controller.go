@@ -34,11 +34,16 @@ func (product *ProductController) Get(writer http.ResponseWriter, request *http.
 }
 
 func (product *ProductController) Post(writer http.ResponseWriter, request *http.Request) {
+	response := new(models.Response)
+	defer response.PrintJSON(writer)
+
 	// Formatting price string
 	priceString := request.FormValue("price")
 	price, err := strconv.ParseFloat(priceString, 32)
 	if err != nil {
-		panic(err) // Invalid input
+		response.Success = false
+		response.Message = "invalid input"
+		return
 	}
 
 	// Creating products model
@@ -48,7 +53,14 @@ func (product *ProductController) Post(writer http.ResponseWriter, request *http
 	productModel.Price = float32(price)
 
 	// Storing products model
-	productModel.Store()
+	id, store_error := productModel.Store()
+	if store_error != nil {
+		response.Success = false
+		return
+	}
 
-	// TODO print response
+	// Successful response
+	response.Success = true
+	productModel.Id = id
+	response.Content = productModel
 }

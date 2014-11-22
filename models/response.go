@@ -11,10 +11,10 @@ import (
 )
 
 type Response struct {
-	Success   bool
-	ErrorCode string
-	Message   string
-	Content   interface{}
+	Success   bool        `json:"success"`
+	ErrorCode string      `json:"error_code"`
+	Message   string      `json:"message"`
+	Content   interface{} `json:"content"`
 }
 
 func (response *Response) PrintJSON(writer io.Writer) {
@@ -24,7 +24,7 @@ func (response *Response) PrintJSON(writer io.Writer) {
 func (response *Response) ToJSON() string {
 	json, err := json.Marshal(response)
 	if err != nil {
-		return ""
+		return "Error converting response to JSON"
 	}
 	return string(json)
 }

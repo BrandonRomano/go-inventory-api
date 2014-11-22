@@ -15,7 +15,7 @@ type Product struct {
 	Price       float32
 }
 
-func (p *Product) Load(id string) {
+func (p *Product) Load(id string) error {
 	// Getting the DB
 	db := database.Get()
 	err := db.QueryRow("SELECT * FROM "+TABLE_NAME+" WHERE id = ?", id).
@@ -23,8 +23,11 @@ func (p *Product) Load(id string) {
 
 	// There was nothing with that ID
 	if err != nil {
-		panic(err) // TODO handle
+		return err
 	}
+
+	// No error
+	return nil
 }
 
 func (p *Product) Store() {

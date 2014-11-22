@@ -17,6 +17,7 @@ func prepareRouter() {
 	// Product Controller
 	productController := new(controllers.Product)
 	router.HandleFunc("/products/{id:[0-9]+}", productController.Get).Methods("GET")
+	router.HandleFunc("/products", productController.Post).Methods("POST")
 
 	// Handle the router
 	http.Handle("/", router)

@@ -6,6 +6,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+const TABLE_NAME = "products"
+
 type Product struct {
 	Id          string
 	Name        string
@@ -16,7 +18,7 @@ type Product struct {
 func (p *Product) Load(id string) {
 	// Getting the DB
 	db := database.Get()
-	err := db.QueryRow("SELECT * FROM product WHERE id = ?", id).
+	err := db.QueryRow("SELECT * FROM "+TABLE_NAME+" WHERE id = ?", id).
 		Scan(&p.Id, &p.Name, &p.Description, &p.Price)
 
 	// There was nothing with that ID
@@ -26,7 +28,20 @@ func (p *Product) Load(id string) {
 }
 
 func (p *Product) Store() {
-	// TODO Store p
+	db := database.Get()
+
+	// Creating prepared statement
+	stmt, err := db.Prepare("INSERT INTO " + TABLE_NAME +
+		"(name,description,price) VALUES(?,?,?)")
+	if err != nil {
+		panic(err) // Failed to create prepared statement
+	}
+
+	// Executing
+	_, response_err := stmt.Exec(&p.Name, &p.Description, &p.Price)
+	if response_err != nil {
+		panic(response_err) // Failed to insert
+	}
 }
 
 func (p *Product) ToJSON() string {

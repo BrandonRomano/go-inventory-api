@@ -15,7 +15,7 @@ func prepareRouter() {
 	router := mux.NewRouter()
 
 	// Product Controller
-	productController := new(controllers.Product)
+	productController := new(controllers.ProductController)
 	router.HandleFunc("/products/{id:[0-9]+}", productController.Get).Methods("GET")
 	router.HandleFunc("/products", productController.Post).Methods("POST")
 

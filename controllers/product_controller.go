@@ -8,9 +8,9 @@ import (
 	"strconv"
 )
 
-type Product struct{}
+type ProductController struct{}
 
-func (product *Product) Get(writer http.ResponseWriter, request *http.Request) {
+func (product *ProductController) Get(writer http.ResponseWriter, request *http.Request) {
 	// Getting the ID
 	vars := mux.Vars(request)
 	id := vars["id"]
@@ -22,7 +22,7 @@ func (product *Product) Get(writer http.ResponseWriter, request *http.Request) {
 	fmt.Fprintln(writer, productModel.ToJSON())
 }
 
-func (product *Product) Post(writer http.ResponseWriter, request *http.Request) {
+func (product *ProductController) Post(writer http.ResponseWriter, request *http.Request) {
 	// Formatting price string
 	priceString := request.FormValue("price")
 	price, err := strconv.ParseFloat(priceString, 32)

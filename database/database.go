@@ -3,16 +3,14 @@ package database
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"os"
 )
 
 var db *sql.DB
 
-const mysqlUser string = ""
-const mysqlPass string = ""
-const mysqlDatabase string = ""
-
 func OpenDatabase() {
-	database, err := sql.Open("mysql", mysqlUser+":"+mysqlPass+"@/"+mysqlDatabase)
+	connection := os.Getenv("INV_API_DB_CONNECTION_STRING")
+	database, err := sql.Open("mysql", connection)
 	if err != nil {
 		panic(err.Error()) // TODO actually handle
 	} else {

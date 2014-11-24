@@ -1,0 +1,9 @@
+CREATE TABLE users(
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+        PRIMARY KEY (id),
+    `username` VARCHAR(16) NOT NULL UNIQUE,
+    `salt` VARCHAR(64) NOT NULL,
+    `hash` VARCHAR(64) NOT NULL
+)
+ENGINE=InnoDB;
+

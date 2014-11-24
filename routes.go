@@ -19,6 +19,10 @@ func prepareRouter() {
 	router.HandleFunc("/products/{id:[0-9]+}", productController.Get).Methods("GET")
 	router.HandleFunc("/products", productController.Post).Methods("POST")
 
+	// User Controller
+	userController := new(controllers.UserController)
+	router.HandleFunc("/users/auth/{username}", userController.GetAuthentication).Methods("GET")
+
 	// Handle the router
 	http.Handle("/", router)
 }

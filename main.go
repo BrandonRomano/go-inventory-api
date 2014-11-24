@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/brandonromano/inventory_api/database"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -12,5 +13,5 @@ func main() {
 
 	// Setting up router + server
 	prepareRouter()
-	http.ListenAndServe("localhost:4000", nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }

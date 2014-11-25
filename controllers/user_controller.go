@@ -17,17 +17,48 @@ func (c *UserController) GetAuthentication(writer http.ResponseWriter, request *
 	vars := mux.Vars(request)
 	username := vars["username"]
 
-	// Requesting authentication
-	auth := new(models.Auth)
-	err := auth.RequestAuthentication(username)
+	// Loading user from DB
+	user := new(models.User)
+	user.Username = username
+	err := user.Load()
 
-	// Request failed
+	// Failed to load user
 	if err != nil {
 		response.Success = false
 		return
 	}
 
+	// Preparing authentication
+	auth := new(models.Auth)
+	auth.PrepareAuth(*user)
+
 	// Success + Pass content
 	response.Success = true
 	response.Content = auth
+}
+
+func (c *UserController) AuthenticateUser(writer http.ResponseWriter, request *http.Request) {
+	// Creating the response
+	response := new(models.Response)
+	defer response.PrintJSON(writer)
+
+	// Grabbing form values
+	username := request.FormValue("username")
+	inputHash := request.FormValue("hash")
+
+	// Loading User
+	user := new(models.User)
+	user.Username = username
+	user.Load()
+
+	// Checking if valid hash
+	if inputHash != user.Hash {
+		response.Success = false
+		return
+	}
+
+	// TODO generate a session token and pass it as the content
+
+	// Successful
+	response.Success = true
 }

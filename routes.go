@@ -22,6 +22,7 @@ func prepareRouter() {
 	// User Controller
 	userController := new(controllers.UserController)
 	router.HandleFunc("/users/auth/{username}", userController.GetAuthentication).Methods("GET")
+	router.HandleFunc("/users/auth", userController.AuthenticateUser).Methods("POST")
 
 	// Handle the router
 	http.Handle("/", router)

@@ -57,8 +57,14 @@ func (c *UserController) AuthenticateUser(writer http.ResponseWriter, request *h
 		return
 	}
 
-	// TODO generate a session token and pass it as the content
+	// Generating a session
+	session := new(models.Session)
+	session.UserId = user.Id
+	session.Token = models.GenerateToken()
+	session.Expiration = models.GetExpiration()
+	session.Store()
 
 	// Successful
+	response.Content = session
 	response.Success = true
 }
